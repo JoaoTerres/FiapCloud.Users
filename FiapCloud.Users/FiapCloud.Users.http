@@ -1,0 +1,6 @@
+@FiapCloud.Users_HostAddress = http://localhost:5121
+
+GET {{FiapCloud.Users_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
