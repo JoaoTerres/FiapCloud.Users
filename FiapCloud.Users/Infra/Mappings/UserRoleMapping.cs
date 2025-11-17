@@ -7,10 +7,11 @@ public class UserRoleMapping : IEntityTypeConfiguration<UserRole>
 {
     public void Configure(EntityTypeBuilder<UserRole> builder)
     {
+        builder.ToTable("UserRoles");
+
         builder.HasKey(ur => new { ur.UserId, ur.RoleId });
 
-        builder.Property(ur => ur.CreatedAt).IsRequired();
-
-        builder.ToTable("UserRoles");
+        builder.Property(ur => ur.CreatedAt)
+            .IsRequired();
     }
 }

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiapCloud.Users.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251107161303_InitialMigration")]
+    [Migration("20251110160047_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -31,13 +31,16 @@ namespace FiapCloud.Users.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("varchar(250)");
+                        .HasColumnType("varchar(200)");
 
                     b.HasKey("Id");
 
@@ -50,8 +53,8 @@ namespace FiapCloud.Users.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("varchar(250)");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -78,6 +81,8 @@ namespace FiapCloud.Users.Infra.Migrations
 
                     b.HasKey("RoleId", "ClaimId");
 
+                    b.HasIndex("ClaimId");
+
                     b.HasIndex("RoleId1");
 
                     b.ToTable("RoleClaims", (string)null);
@@ -96,15 +101,12 @@ namespace FiapCloud.Users.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(150)");
 
-                    b.Property<string>("FullName")
-                        .HasColumnType("varchar(200)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -131,6 +133,8 @@ namespace FiapCloud.Users.Infra.Migrations
 
                     b.HasKey("UserId", "ClaimId");
 
+                    b.HasIndex("ClaimId");
+
                     b.HasIndex("UserId1");
 
                     b.ToTable("UserClaims", (string)null);
@@ -152,6 +156,8 @@ namespace FiapCloud.Users.Infra.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
+                    b.HasIndex("RoleId");
+
                     b.HasIndex("UserId1");
 
                     b.ToTable("UserRoles", (string)null);
@@ -159,6 +165,12 @@ namespace FiapCloud.Users.Infra.Migrations
 
             modelBuilder.Entity("FiapCloud.Users.Domain.Entities.RoleClaim", b =>
                 {
+                    b.HasOne("FiapCloud.Users.Domain.Entities.Claim", null)
+                        .WithMany()
+                        .HasForeignKey("ClaimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FiapCloud.Users.Domain.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
@@ -172,6 +184,12 @@ namespace FiapCloud.Users.Infra.Migrations
 
             modelBuilder.Entity("FiapCloud.Users.Domain.Entities.UserClaim", b =>
                 {
+                    b.HasOne("FiapCloud.Users.Domain.Entities.Claim", null)
+                        .WithMany()
+                        .HasForeignKey("ClaimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FiapCloud.Users.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -185,6 +203,12 @@ namespace FiapCloud.Users.Infra.Migrations
 
             modelBuilder.Entity("FiapCloud.Users.Domain.Entities.UserRole", b =>
                 {
+                    b.HasOne("FiapCloud.Users.Domain.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FiapCloud.Users.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")

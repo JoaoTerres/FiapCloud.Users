@@ -7,10 +7,11 @@ public class RoleClaimMapping : IEntityTypeConfiguration<RoleClaim>
 {
     public void Configure(EntityTypeBuilder<RoleClaim> builder)
     {
+        builder.ToTable("RoleClaims");
+
         builder.HasKey(rc => new { rc.RoleId, rc.ClaimId });
 
-        builder.Property(rc => rc.CreatedAt).IsRequired();
-
-        builder.ToTable("RoleClaims");
+        builder.Property(rc => rc.CreatedAt)
+            .IsRequired();
     }
 }

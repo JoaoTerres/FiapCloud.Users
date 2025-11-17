@@ -5,26 +5,23 @@ public class Claim
     public Guid Id { get; private set; }
     public string Type { get; private set; }
     public string Value { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+
     private Claim() { }
 
     public Claim(string type, string value)
     {
+        Id = Guid.NewGuid();
         Type = type;
         Value = value;
-        Id = Guid.NewGuid();
+        CreatedAt = DateTime.UtcNow;
 
         Validate();
     }
 
-    public void ChangeValue(string newValue)
-    {
-        AssertValidation.NotEmpty(newValue, "Valor da claim é obrigatório.");
-        Value = newValue;
-    }
-
     private void Validate()
     {
-        AssertValidation.NotEmpty(Type, "Tipo de claim é obrigatório.");
+        AssertValidation.NotEmpty(Type, "Tipo da claim é obrigatório.");
         AssertValidation.NotEmpty(Value, "Valor da claim é obrigatório.");
     }
 }

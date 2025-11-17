@@ -5,6 +5,7 @@ public class UserClaim
     public Guid UserId { get; private set; }
     public Guid ClaimId { get; private set; }
     public DateTime CreatedAt { get; private set; }
+
     private UserClaim() { }
 
     public UserClaim(Guid userId, Guid claimId)

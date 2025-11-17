@@ -17,7 +17,8 @@ namespace FiapCloud.Users.Infra.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Type = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Value = table.Column<string>(type: "varchar(250)", nullable: false)
+                    Value = table.Column<string>(type: "varchar(200)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +31,7 @@ namespace FiapCloud.Users.Infra.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Description = table.Column<string>(type: "varchar(250)", nullable: true)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,8 +45,7 @@ namespace FiapCloud.Users.Infra.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Username = table.Column<string>(type: "varchar(100)", nullable: false),
                     Email = table.Column<string>(type: "varchar(150)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false),
-                    FullName = table.Column<string>(type: "varchar(200)", nullable: true),
+                    PasswordHash = table.Column<string>(type: "varchar(255)", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -66,6 +66,12 @@ namespace FiapCloud.Users.Infra.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RoleClaims", x => new { x.RoleId, x.ClaimId });
+                    table.ForeignKey(
+                        name: "FK_RoleClaims_Claims_ClaimId",
+                        column: x => x.ClaimId,
+                        principalTable: "Claims",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RoleClaims_Roles_RoleId",
                         column: x => x.RoleId,
@@ -92,6 +98,12 @@ namespace FiapCloud.Users.Infra.Migrations
                 {
                     table.PrimaryKey("PK_UserClaims", x => new { x.UserId, x.ClaimId });
                     table.ForeignKey(
+                        name: "FK_UserClaims_Claims_ClaimId",
+                        column: x => x.ClaimId,
+                        principalTable: "Claims",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_UserClaims_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
@@ -117,6 +129,12 @@ namespace FiapCloud.Users.Infra.Migrations
                 {
                     table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
+                        name: "FK_UserRoles_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
@@ -130,14 +148,29 @@ namespace FiapCloud.Users.Infra.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_RoleClaims_ClaimId",
+                table: "RoleClaims",
+                column: "ClaimId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId1",
                 table: "RoleClaims",
                 column: "RoleId1");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserClaims_ClaimId",
+                table: "UserClaims",
+                column: "ClaimId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId1",
                 table: "UserClaims",
                 column: "UserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_RoleId",
+                table: "UserRoles",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_UserId1",
@@ -149,9 +182,6 @@ namespace FiapCloud.Users.Infra.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Claims");
-
-            migrationBuilder.DropTable(
                 name: "RoleClaims");
 
             migrationBuilder.DropTable(
@@ -159,6 +189,9 @@ namespace FiapCloud.Users.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
+
+            migrationBuilder.DropTable(
+                name: "Claims");
 
             migrationBuilder.DropTable(
                 name: "Roles");

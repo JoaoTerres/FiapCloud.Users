@@ -5,6 +5,7 @@ public class RoleClaim
     public Guid RoleId { get; private set; }
     public Guid ClaimId { get; private set; }
     public DateTime CreatedAt { get; private set; }
+
     private RoleClaim() { }
 
     public RoleClaim(Guid roleId, Guid claimId)

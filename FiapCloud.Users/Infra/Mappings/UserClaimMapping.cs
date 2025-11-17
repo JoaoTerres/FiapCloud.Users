@@ -7,10 +7,11 @@ public class UserClaimMapping : IEntityTypeConfiguration<UserClaim>
 {
     public void Configure(EntityTypeBuilder<UserClaim> builder)
     {
+        builder.ToTable("UserClaims");
+
         builder.HasKey(uc => new { uc.UserId, uc.ClaimId });
 
-        builder.Property(uc => uc.CreatedAt).IsRequired();
-
-        builder.ToTable("UserClaims");
+        builder.Property(uc => uc.CreatedAt)
+            .IsRequired();
     }
 }
